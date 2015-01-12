@@ -110,6 +110,6 @@ for url in urls:
   c, cs = fte_fetch_comments(url)
   c, cs = print_coms(c, cs) 
   zi = write(c,cs)
-  write_coms(zi, url, "com3.csv")
+  write_coms(zi, url, "com6.csv")
   print len(c)
   print len(cs)
