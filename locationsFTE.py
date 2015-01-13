@@ -31,7 +31,7 @@ def fte_fetch_comments(url):
   
   comments = driver.find_elements_by_class_name("postText")
   commenters = driver.find_elements_by_class_name("profileName")
-  locations = driver.find_elements_by_class_name("uiLinkSubtle") 
+  locations = driver.find_elements_by_class_name("fsm") 
 
   morec = True
   while morec:
@@ -42,7 +42,7 @@ def fte_fetch_comments(url):
   
       comments = driver.find_elements_by_class_name("postText")
       commenters = driver.find_elements_by_class_name("profileName")
-      locations = driver.find_elements_by_class_name("uiLinkSubtle") 
+      locations = driver.find_elements_by_class_name("fsm") 
     except:
       return comments, commenters, locations
 
@@ -66,6 +66,7 @@ def print_coms(comments, commenters, locations):
 
   for loc in locations:
     l = loc.text
+    print l
     locs.append(l)
 
   return coms, ppl, locs
