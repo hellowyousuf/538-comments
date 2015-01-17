@@ -43,6 +43,8 @@ def fte_fetch_comments(url):
   
   comments = driver.find_elements_by_class_name("postText")
   commenters = driver.find_elements_by_class_name("profileName")
+  posts = driver.find_elements_by_class_name("postContainer")
+  locations = [post.find_elements_by_class_name("fsm")[0] for post in posts]
 
 
   morec = True
@@ -50,22 +52,27 @@ def fte_fetch_comments(url):
     try:
       morec = driver.find_element_by_class_name("pam")
       morec.click()
-      time.sleep(2)
+      time.sleep(1)
   
       comments = driver.find_elements_by_class_name("postText")
       commenters = driver.find_elements_by_class_name("profileName")
- 
+
     except:
-      return comments, commenters, author, title
+      comments = driver.find_elements_by_class_name("postText")
+      commenters = driver.find_elements_by_class_name("profileName")
+      posts = driver.find_elements_by_class_name("postContainer")
+      locations = [post.find_elements_by_class_name("fsm")[0] for post in posts]
+      return comments, commenters, locations, author, title
 
-  return comments, commenters, author, titles
+  return comments, commenters, locations, author, titles
 
-def print_coms(comments, commenters, author, title):
+def print_coms(comments, commenters, locations, author, title):
 
   coms = []
   ppl = []
   authors = []
   titles = []
+  locs = []
 
   author = author.encode("ascii", "ignore")
   title = title.encode("ascii", "ignore")
@@ -82,13 +89,24 @@ def print_coms(comments, commenters, author, title):
     print per
     ppl.append(per)
 
-  return coms, ppl, authors, titles
+  for location in locations:
+    loc = location.text.encode("ascii","ignore")
+    if " at " in loc:
+      loc = loc.split(" at ")[1].strip()
+      
+    elif "menter " in loc:
+      loc = loc.split("menter ")[1].strip()
+    
+    else:
+      loc = loc.strip()
 
-def write(comments, commenters, authors, titles):
+    locs.append(loc)
 
-  zipped = (zip(commenters, comments, authors, titles))
+
+  zipped = (zip(coms, ppl, locs, authors, titles))
   print zipped
-  return zipped
+
+  return zipped 
 
 def setup(outfile):
   try:
@@ -107,7 +125,7 @@ def write_coms(zipped, url, outfile):
   writer = csv.writer(f)
 
 
-  for fid, com, auth, title in zipped:
+  for fid, com, loc, auth, title in zipped:
     try:
       if len(fid) > 100:
         continue
@@ -124,7 +142,7 @@ def write_coms(zipped, url, outfile):
       fbinfo = requests.get(fb_url).json()    
       print fbinfo
       comwrite = str(com).rstrip("\n")      
-      tup = (fbinfo["name"],fbinfo["gender"],fid,url,auth,title,comwrite)
+      tup = (fbinfo["name"],fbinfo["gender"],loc,fid,url,auth,title,comwrite)
       if len(tup) < 4:
         continue
  
@@ -140,9 +158,8 @@ def sample(fname):
 
   for url in urls:
     try: 
-      c, cs, auth, title = fte_fetch_comments(url)
-      c, cs, auths, titles = print_coms(c, cs, auth, title) 
-      zi = write(c,cs, auths, titles)
+      c, cs, locs, auth, title = fte_fetch_comments(url)
+      zi = print_coms(c, cs, locs, auth, title) 
       write_coms(zi, url, fname)
       print len(c)
       print len(cs)
