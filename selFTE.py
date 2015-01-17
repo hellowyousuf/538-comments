@@ -54,8 +54,8 @@ def fte_fetch_comments(url):
       morec.click()
       time.sleep(1)
   
-      comments = driver.find_elements_by_class_name("postText")
-      commenters = driver.find_elements_by_class_name("profileName")
+      #comments = driver.find_elements_by_class_name("postText")
+      #commenters = driver.find_elements_by_class_name("profileName")
 
     except:
       comments = driver.find_elements_by_class_name("postText")
@@ -100,6 +100,7 @@ def print_coms(comments, commenters, locations, author, title):
     else:
       loc = loc.strip()
 
+    print loc
     locs.append(loc)
 
 
@@ -124,15 +125,18 @@ def write_coms(zipped, url, outfile):
   f = open(outfile, "a")
   writer = csv.writer(f)
 
+  print zipped
 
-  for fid, com, loc, auth, title in zipped:
+  for com, fid, loc, auth, title in zipped:
     try:
       if len(fid) > 100:
+        print "facebook id too long, skipping"
         continue
 
       fid = fid.split("/")[-1]
     
     except:
+      print "unexpected error"
       continue
 
 
