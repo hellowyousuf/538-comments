@@ -1,4 +1,4 @@
 #/bin/bash
 
-python selFTE.py $1
-python splcity.py $1 $2
+python selFTE.py $1 $2
+python splcity.py $2 $3

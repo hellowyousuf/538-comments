@@ -9,7 +9,9 @@ import csv
 driver = webdriver.Firefox()
 base_facebook = "https://graph.facebook.com/v1.0/"
 
-infile = open('urls.csv', 'r')
+inp = sys.argv[1]
+
+infile = open(inp, 'r')
 urls = []
 for row in infile:
   dom = row.split("\n")[0]
@@ -173,6 +175,6 @@ def sample(fname):
 
 if __name__ == "__main__":
 
-  fname = sys.argv[1]
+  fname = sys.argv[2]
   setup(fname)
   sample(fname)
