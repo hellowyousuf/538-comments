@@ -9,6 +9,7 @@ import csv
 driver = webdriver.Firefox()
 base_facebook = "https://graph.facebook.com/v1.0/"
 
+#First cmd line arg is input CSV file
 inp = sys.argv[1]
 
 infile = open(inp, 'r')
@@ -17,8 +18,6 @@ for row in infile:
   dom = row.split("\n")[0]
   urls.append(dom)
 
-
-#urls = ["http://fivethirtyeight.com/datalab/everything-steven-soderbergh-watched-and-read-in-2014/","http://fivethirtyeight.com/datalab/chris-christie-2016-president-republican-primary-overrated/","http://fivethirtyeight.com/datalab/13-nba-teams-have-benches-better-than-the-knicks/","http://fivethirtyeight.com/features/how-much-fuel-we-need-to-leave-buried-to-beat-climate-change/", "http://fivethirtyeight.com/datalab/chris-christie-2016-president-republican-primary-overrated/"]
 
 def fte_fetch_comments(url):
 
@@ -94,9 +93,11 @@ def print_coms(comments, commenters, locations, author, title):
   for location in locations:
     loc = location.text.encode("ascii","ignore")
     if " at " in loc:
+      # handle case of employment in location
       loc = loc.split(" at ")[1].strip()
       
     elif "menter " in loc:
+      # handle case of "Top Commenter" without employment
       loc = loc.split("menter ")[1].strip()
     
     else:
@@ -132,13 +133,14 @@ def write_coms(zipped, url, outfile):
   for com, fid, loc, auth, title in zipped:
     try:
       if len(fid) > 100:
+        # Skip profiles whose facebook privacy settings are restrictive
         print "facebook id too long, skipping"
         continue
 
       fid = fid.split("/")[-1]
     
-    except:
-      print "unexpected error"
+    except Exception, e:
+      print str(e)
       continue
 
 
@@ -150,6 +152,7 @@ def write_coms(zipped, url, outfile):
       comwrite = str(com).rstrip("\n")      
       tup = (fbinfo["name"],fbinfo["gender"],loc,fid,url,auth,title,comwrite)
       if len(tup) < 4:
+        #If fields are missing due to missing info, ignore the entry
         continue
  
       writer.writerow(tup)
@@ -160,7 +163,7 @@ def write_coms(zipped, url, outfile):
 
     f.flush()
 
-def sample(fname):
+def get_comments(fname):
 
   for url in urls:
     try: 
@@ -174,7 +177,10 @@ def sample(fname):
       continue
 
 if __name__ == "__main__":
-
+  """Command line usage:
+  first arg is name of input CSV file (each url on separate line)
+  second arg is name of output CSV file
+  """
   fname = sys.argv[2]
   setup(fname)
-  sample(fname)
+  get_comments(fname)
