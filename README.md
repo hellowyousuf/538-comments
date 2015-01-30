@@ -1,4 +1,4 @@
---538.com Facebook Comments scraper--
+-- 538.com Facebook Comments scraper --
 
 Modules - the heavy lifting is done in selFTE.py which uses selenium as the browser automation tool to execute javascript on page and attach to the virtual DOM for FB comments. selFTE.py uses the Firefox driver, so make sure that you have Firefox installed.
 
