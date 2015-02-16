@@ -59,7 +59,7 @@ def fte_fetch_comments(url):
   posts = driver.find_elements_by_class_name("postContainer")
   locations = [post.find_elements_by_class_name("fsm")[0] for post in posts]
 
-
+  #Keep clicking the "more comments" button until all comments are expanded
   morec = True
   while morec:
     try:
@@ -80,6 +80,11 @@ def fte_fetch_comments(url):
   return comments, commenters, locations, author, titles
 
 def print_coms(comments, commenters, locations, author, title):
+
+  """
+  Utility function that parses all extracted information, converts
+  unicode to ASCII and prints (for sanity check) to console.
+  """
 
   coms = []
   ppl = []
@@ -176,6 +181,9 @@ def write_coms(zipped, url, outfile):
     f.flush()
 
 def get_comments(fname):
+  """
+  Entry point for extracting comments from list of urls
+  """
 
   for url in urls:
     try: 
