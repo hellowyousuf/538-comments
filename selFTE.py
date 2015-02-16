@@ -6,6 +6,12 @@ from selenium.webdriver.common.keys import Keys
 import time
 import csv
 
+"""
+This script uses selenium to automate onpage Javascript interactions. The
+base driver is a Firefox browser.
+"""
+
+
 driver = webdriver.Firefox()
 base_facebook = "https://graph.facebook.com/v1.0/"
 
@@ -20,6 +26,12 @@ for row in infile:
 
 
 def fte_fetch_comments(url):
+  """
+  Opens url with Firefox driver, attaches to facebook iframe, and expands
+  comments until all are extracted. Scrapes article title, article author,
+  comment text, comment author, and comment author facebook id (for later use)
+  """
+
 
   driver.get(url)
   elem = driver.find_elements_by_class_name("fte-expandable-title")[-1]
